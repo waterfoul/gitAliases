@@ -20,11 +20,12 @@
 	mdt = multidiff-tool
 	co = checkout
 	commit-push = !git commit && git push
+	cp = commit-push
 	pu = !git push -u origin `git symbolic-ref --short HEAD`
 	branch-clean = !git branch -d `git branch | grep -v master | sed s/\\*//g`
 	diffmaster = "!f(){ \
 		branch_name=\"$(git symbolic-ref HEAD 2>/dev/null)\" || \
-        branch_name=\"(unnamed branch)\"; \
+        	branch_name=\"(unnamed branch)\"; \
 		\
 		branch_name=${branch_name##refs/heads/}; \
 		\
@@ -89,7 +90,7 @@
 	}; f"
 	clean-revert=!git checkout -- . && git clean -fd
 	ap=!git commit --amend --no-edit && git push -f
-	push-to="!f(){ \
+	pushto="!f(){ \
 		remote=`echo $1 | sed s_/.*__g`; \
 		remoteBranch=`echo $1 | sed s_^.*/__g`; \
 		if [ "$remote" == "$remoteBranch" ]; then \
