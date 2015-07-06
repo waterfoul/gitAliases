@@ -1,0 +1,99 @@
+[alias]
+  multidiff-tool = "!f(){ \
+		pids=\"\"; \
+		git diff $@ --name-only | { \
+			while read filename; do \
+				git difftool $@ --no-prompt \"$filename\" & \
+				pids=\"$pids $!\"; \
+			done; \
+			\
+			echo $pids; \
+			for job in `echo $pids`; \
+			do \
+				wait $job || let "FAIL+=1"; \
+			done; \
+			\
+			exit $FAIL; \
+		}; \
+		exit $?; \
+	}; f"
+	mdt = multidiff-tool
+	co = checkout
+	commit-push = !git commit && git push
+	pu = !git push -u origin `git symbolic-ref --short HEAD`
+	branch-clean = !git branch -d `git branch | grep -v master | sed s/\\*//g`
+	diffmaster = "!f(){ \
+		branch_name=\"$(git symbolic-ref HEAD 2>/dev/null)\" || \
+        branch_name=\"(unnamed branch)\"; \
+		\
+		branch_name=${branch_name##refs/heads/}; \
+		\
+		merge_base=`git merge-base master $branch_name`; \
+		git multidiff-tool \"$merge_base\"; \
+	}; f"
+	dm = diffmaster
+	mergetoolall = "!f(){ \
+		FAIL=0; \
+		pids=\"\"; \
+		git diff --name-status --diff-filter=U | sed s/^U\\ *//g | { \
+			while read filename; do \
+				git mergetool "$filename" $@ & \
+				pids=\"$pids $!\"; \
+				sleep 1; \
+			done; \
+			\
+			for job in `echo $pids`; \
+			do \
+				wait $job || let "FAIL+=1"; \
+			done; \
+			\
+			exit $FAIL; \
+		}; \
+		exit $?; \
+	}; f"
+	mm = "!f(){ \
+		git pull origin; \
+		git merge origin/master; \
+		git mergetoolall; \
+		\
+		if [ $? -eq 0 ]; then \
+			git commit; \
+			\
+			for var in \"$@\"; \
+			do \
+				git $var; \
+			done; \
+		fi; \
+	}; f"
+	mmp="!f(){ \
+		currentBranch=\"\"; \
+		stashed=\"false\"; \
+		if [[ \"$1\" != \"\" ]]; then \
+			currentBranch=\"$(git symbolic-ref HEAD 2>/dev/null)\"; \
+			echo $currentBranch; \
+			currentBranch=\"$(echo $currentBranch|sed s_^.*/__g)\"; \
+			echo $currentBranch; \
+			if [[ \"$(git diff-index --name-only HEAD --)\" != \"\" ]]; then \
+				stashed=\"true\"; \
+				git stash; \
+			fi; \
+			git checkout \"$1\"; \
+		fi; \
+		git mm push; \
+		if [[ \"$currentBranch\" != \"\" ]]; then \
+			git checkout \"$currentBranch\"; \
+			if [[ \"$stashed\" == \"true\" ]]; then \
+				git stash pop; \
+			fi; \
+		fi; \
+	}; f"
+	clean-revert=!git checkout -- . && git clean -fd
+	ap=!git commit --amend --no-edit && git push -f
+	push-to="!f(){ \
+		remote=`echo $1 | sed s_/.*__g`; \
+		remoteBranch=`echo $1 | sed s_^.*/__g`; \
+		if [ "$remote" == "$remoteBranch" ]; then \
+			remote=origin; \
+		fi; \
+		git push $remote `git symbolic-ref --short HEAD`:$remoteBranch $2 $3 $4 $5 $6 $7 $8 $9; \
+	}; f"
