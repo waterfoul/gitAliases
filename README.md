@@ -6,6 +6,7 @@ source path\to\bashrc
 ```
 to your ~/.bashrc and you need to add
 ```
-
+[include]
+    path = path\to\gitconfig
 ```
 to your .gitconfig
