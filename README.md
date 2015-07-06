@@ -9,4 +9,4 @@ to your ~/.bashrc and you need to add
 [include]
     path = path\to\gitconfig
 ```
-to your .gitconfig
+to your ~/.gitconfig
