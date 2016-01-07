@@ -21,7 +21,7 @@
 	mdt = !git multidiff-tool
 	co = checkout
 	commit-push = !git commit && git push
-	cp = commit-push
+	cp = !git commit-push
 	pu = !git push -u origin `git symbolic-ref --short HEAD`
 	branch-clean = "!f(){ \
 		git branch -d `git branch | grep -v master | sed s/\\*//g`; \
@@ -42,7 +42,7 @@
 		pids=\"\"; \
 		git diff --name-status --diff-filter=U | sed s/^U\\ *//g | { \
 			while read filename; do \
-				git mergetool "$filename" $@ & \
+				git mergetool --no-prompt "$filename" $@ & \
 				pids=\"$pids $!\"; \
 				sleep 1; \
 			done; \
