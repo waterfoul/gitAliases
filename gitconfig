@@ -93,6 +93,7 @@
 		fi; \
 	}; f"
 	clean-revert=!git checkout -- . && git clean -fd
+	a=!git commit --amend --no-edit
 	ap=!git commit --amend --no-edit && git push -f
 	pushto="!f(){ \
 		remote=`echo $1 | sed s_/.*__g`; \
