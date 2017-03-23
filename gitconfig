@@ -36,7 +36,7 @@
 		merge_base=`git merge-base master $branch_name`; \
 		git multidiff-tool \"$merge_base\"; \
 	}; f"
-	dm = diffmaster
+	dm = !git diffmaster
 	mergetoolall = "!f(){ \
 		FAIL=0; \
 		pids=\"\"; \
