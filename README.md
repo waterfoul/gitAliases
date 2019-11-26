@@ -13,5 +13,5 @@ to your ~/.gitconfig
 
 To clone and install run the following
 
-git clone "https://github.com/waterfoul/gitAliases.git" ~/.gitAliases && echo "source ~/.gitAliases/bashrc" >> ~/.bashrc && echo "[include]
+git clone "https://github.com/waterfoul/gitAliases.git" ~/.gitAliases && echo "source ~/.gitAliases/bashrc" >> ~/.bashrc && echo "[include]  
     path = ~/.gitAliases/gitconfig" >> ~/.gitconfig
